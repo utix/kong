@@ -103,14 +103,14 @@ function roundrobin_algorithm:getPeer(cacheOnly, handle, hashValue)
         -- if healty we just need to try again
         if not self.balancer.healthy then
           --return nil, balancers.errors.ERR_BALANCER_UNHEALTHY
-          return nil, balancers.errors.ERR_BALANCER_UNHEALTHY .. "-wheelSize = " .. tostring(self.wheelSize)
+          return nil, "wheelSize = " .. tostring(self.wheelSize)
         end
       elseif port == balancers.errors.ERR_ADDRESS_UNAVAILABLE then
         ngx.log(ngx.DEBUG, "found address but it was unavailable. ",
           " trying next one.")
       else
         -- an unknown error occurred
-        return nil, port .. "- wheelSize = " .. tostring(self.wheelSize)
+        return nil, port
       end
 
     end
