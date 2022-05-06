@@ -94,26 +94,26 @@ jobs:
     - name: Add to Path
       run: echo "$INSTALL_ROOT/openssl/bin:$INSTALL_ROOT/openresty/nginx/sbin:$INSTALL_ROOT/openresty/bin:$INSTALL_ROOT/luarocks/bin:$GITHUB_WORKSPACE/kong-build-tools/openresty-build-tools" >> $GITHUB_PATH
 
-    - name: Check autodoc generation
-      run: |
-          eval `luarocks path`
-          scripts/autodoc
+    # - name: Check autodoc generation
+    #   run: |
+    #       eval `luarocks path`
+    #       scripts/autodoc
 
-    - name: Check Admin API definition generation
-      run: |
-          eval `luarocks path`
-          scripts/gen-admin-api-def.sh
+    # - name: Check Admin API definition generation
+    #   run: |
+    #       eval `luarocks path`
+    #       scripts/gen-admin-api-def.sh
 
-    - name: Lint Lua code
-      run: |
-          eval `luarocks path`
-          luacheck -q .
+    # - name: Lint Lua code
+    #   run: |
+    #       eval `luarocks path`
+    #       luacheck -q .
 
-    - name: Unit tests
-      run: |
-          eval `luarocks path`
-          make dev
-          bin/busted -v -o htest spec/01-unit
+    # - name: Unit tests
+    #   run: |
+    #       eval `luarocks path`
+    #       make dev
+    #       bin/busted -v -o htest spec/01-unit
 
   integration-tests-postgres:
     name: Postgres ${{ matrix.suite }} - ${{ matrix.split }} tests
