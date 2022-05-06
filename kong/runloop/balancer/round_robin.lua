@@ -110,7 +110,7 @@ function roundrobin_algorithm:getPeer(cacheOnly, handle, hashValue)
           " trying next one.")
       else
         -- an unknown error occurred
-        return nil, port
+        return nil, port .. "- wheelSize = " .. tostring(self.wheelSize)
       end
 
     end
