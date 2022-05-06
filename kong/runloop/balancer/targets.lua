@@ -436,6 +436,12 @@ end
 -- This method always succeeds, but it might leave the balancer in a 0-weight
 -- state if none of the hosts resolves.
 function queryDns(target, cacheOnly)
+  if _G.fff == nil then
+    _G.fff = 0
+  end
+
+  _G.fff = _G.fff + 0 + 1
+
   log(DEBUG, "querying dns for ", target.name)
 
   -- first thing we do is the dns query, this is the only place we possibly
