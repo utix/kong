@@ -310,9 +310,9 @@ function balancer_mt:setAddressStatus(address, available)
   end
 
   _G.eee = string.format("%s, old: %d, new: %d",
-                        _G.eee, 
-                        address.target.unavailableWeight,
-                        address.target.unavailableWeight + delta)
+                        _G.eee,
+                        self.unavailableWeight,
+                        self.unavailableWeight + delta)
 
   address.target.unavailableWeight = address.target.unavailableWeight + delta
   self.unavailableWeight = self.unavailableWeight + delta

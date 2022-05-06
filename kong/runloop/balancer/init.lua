@@ -294,7 +294,8 @@ local function execute(balancer_data, ctx)
       (port == "No peers are available" or port == "Balancer is unhealthy")
     then
       --return nil, "failure to get a peer from the ring-balancer", 503
-      return nil, "failure to get a peer from the ring-balancer: " .. _G.eee, 503
+      local err = string.format("failure to get a peer from the ring-balancer: %s, %s", _G.eee, _G.ddd)
+      return nil, err, 503
     end
     hostname = hostname or ip
     balancer_data.hash_value = hash_value
