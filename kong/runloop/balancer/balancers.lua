@@ -459,7 +459,7 @@ function balancer_mt:updateStatus()
     _G.ddd = "unhealthy due to totalWeight == 0"
   else
     self.healthy = ((self.totalWeight - self.unavailableWeight) / self.totalWeight * 100 > self.healthThreshold)
-    _G.ddd = tostring(self) .. " due to cal the healthThreshold"
+    _G.ddd = tostring(self.healthy) .. " due to cal the healthThreshold"
   end
 
   if self.callback and self.healthy ~= old_status then
