@@ -304,6 +304,16 @@ function balancer_mt:setAddressStatus(address, available)
   if available then
     delta = -delta
   end
+
+  if _G.eee == nil then
+    _G.eee = ""
+  end
+
+  _G.eee = string.format("%s, old: %d, new: %d",
+                        _G.eee, 
+                        address.target.unavailableWeight,
+                        address.target.unavailableWeight + delta)
+
   address.target.unavailableWeight = address.target.unavailableWeight + delta
   self.unavailableWeight = self.unavailableWeight + delta
   self:updateStatus()
