@@ -456,8 +456,10 @@ function balancer_mt:updateStatus()
 
   if self.totalWeight == 0 then
     self.healthy = false
+    ngx.log(ngx.ERR, "cal_A: ", self.healthy)
   else
     self.healthy = ((self.totalWeight - self.unavailableWeight) / self.totalWeight * 100 > self.healthThreshold)
+    ngx.log(ngx.ERR, "cal_B: ", self.healthy)
   end
 
   if self.callback and self.healthy ~= old_status then
