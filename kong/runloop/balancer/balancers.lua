@@ -456,8 +456,10 @@ function balancer_mt:updateStatus()
 
   if self.totalWeight == 0 then
     self.healthy = false
+    _G.ddd = "unhealthy due to totalWeight == 0"
   else
     self.healthy = ((self.totalWeight - self.unavailableWeight) / self.totalWeight * 100 > self.healthThreshold)
+    _G.ddd = tostring(self) .. " due to cal the healthThreshold"
   end
 
   if self.callback and self.healthy ~= old_status then
@@ -561,7 +563,7 @@ end
 
 function balancer_mt:getPeer(...)
   if not self.healthy then
-    return nil, "Balancer is unhealthy" .. "DUMMY"
+    return nil, "Balancer is unhealthy"
   end
 
   if not self.algorithm or not self.algorithm.afterHostUpdate then
