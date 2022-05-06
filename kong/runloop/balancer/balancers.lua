@@ -561,7 +561,7 @@ end
 
 function balancer_mt:getPeer(...)
   if not self.healthy then
-    return nil, "Balancer is unhealthy"
+    return nil, "Balancer is unhealthy" .. "DUMMY"
   end
 
   if not self.algorithm or not self.algorithm.afterHostUpdate then
