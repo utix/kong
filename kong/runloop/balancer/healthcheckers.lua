@@ -134,6 +134,10 @@ end
 -- @param balancer The balancer object
 local function attach_healthchecker_to_balancer(hc, balancer)
   local function hc_callback(tgt, event)
+    if not _G.hhh then
+      _G.hhh = ""
+    end
+
     local status
     if event == hc.events.healthy then
       status = true
@@ -142,6 +146,8 @@ local function attach_healthchecker_to_balancer(hc, balancer)
     else
       return
     end
+
+    _G.hhh = string.format("%s, %s", _G.hhh, tostring(status))
 
     local ok, err
     ok, err = balancer:setAddressStatus(balancer:findAddress(tgt.ip, tgt.port, tgt.hostname), status)
