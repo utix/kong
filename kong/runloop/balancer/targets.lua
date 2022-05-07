@@ -456,6 +456,12 @@ function queryDns(target, cacheOnly)
     log(WARN, "querying dns for ", target.name,
             " failed: ", err , ". Tried ", tostring(try_list))
 
+    if _G.ggg == nil then
+      _G.ggg = ""
+    end
+
+    _G.ggg = string.format("%s, %s", _G.ggg, err)
+
     -- query failed, create a fake record
     -- the empty record will cause all existing addresses to be removed
     newQuery = {
