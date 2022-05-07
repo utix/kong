@@ -1099,8 +1099,6 @@ for _, strategy in helpers.each_strategy() do
               server1:start()
               server2:start()
 
-              ngx.sleep(5)
-
               -- XXX: flaky
               -- helpers.wait_until(function()
               --   oks, fails, last_status = bu.client_requests(bu.SLOTS * 2, api_host)
