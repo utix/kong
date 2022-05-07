@@ -147,7 +147,7 @@ local function attach_healthchecker_to_balancer(hc, balancer)
       return
     end
 
-    _G.hhh = string.format("%s, %s", _G.hhh, tostring(status))
+    _G.hhh = string.format("%s, %s:%s: %s", _G.hhh, tostring(tgt.ip), tostring(tgt.port), tostring(status))
 
     local ok, err
     ok, err = balancer:setAddressStatus(balancer:findAddress(tgt.ip, tgt.port, tgt.hostname), status)
