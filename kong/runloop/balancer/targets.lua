@@ -452,14 +452,6 @@ function queryDns(target, cacheOnly)
   -- atomicity.
   local newQuery, err, try_list = dns_client.resolve(target.name, nil, cacheOnly)
 
-  if _G.ggg == nil then
-    _G.ggg = ""
-  end
-
-  for k, v in pairs(newQuery[1]) do
-    _G.ggg = string.format("%s, dns[%s]: %s, ", _G.ggg, k, tostring(v))
-  end
-
   if err then
     log(WARN, "querying dns for ", target.name,
             " failed: ", err , ". Tried ", tostring(try_list))
