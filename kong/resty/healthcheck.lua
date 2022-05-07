@@ -918,10 +918,18 @@ function checker:run_single_check(ip, port, hostname, hostheader)
   local ok
   ok, err = sock:connect(ip, port)
   if not ok then
+
+    if not _G.iii then
+      _G.iii = ""
+    end
+
     if err == "timeout" then
       sock:close()  -- timeout errors do not close the socket.
+      _G.iii = string.format("%s, %s:%s: timeout", _G.iii, ip, port)
       return self:report_timeout(ip, port, hostname, "active")
     end
+
+    _G.iii = string.format("%s, %s:%s: %s", _G.iii, ip, port, err)
     return self:report_tcp_failure(ip, port, hostname, "connect", "active")
   end
 
