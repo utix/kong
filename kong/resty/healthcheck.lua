@@ -24,6 +24,11 @@
 -- @author Hisham Muhammad, Thijs Schreijer
 -- @license Apache 2.0
 
+
+if _G.iii == nil then
+  _G.iii = ""
+end
+
 local ERR = ngx.ERR
 local WARN = ngx.WARN
 local DEBUG = ngx.DEBUG
@@ -1162,6 +1167,8 @@ local function checker_callback(self, health_mode)
   if not list_to_check[1] then
     self:log(DEBUG, "checking ", health_mode, " targets: nothing to do")
   else
+
+    _G.iii = string.format("%s, up_%s", _G.iii, health_mode)
     local timer = resty_timer({
       interval = 0,
       recurring = false,
