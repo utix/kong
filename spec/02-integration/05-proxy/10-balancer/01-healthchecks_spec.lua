@@ -1045,17 +1045,24 @@ for _, strategy in helpers.each_strategy() do
               -- configure healthchecks with a 1-error threshold
               local upstream_name, upstream_id = bu.add_upstream(bp, {
                 healthchecks = bu.healthchecks_config {
+                  active = {
+                    healthy = {
+                      interval = 0.1,
+                    },
+                    unhealthy = {
+                      http_statuses = { 401, 500 },
+                      interval = 0.1,
+                    }
+                  },
                   passive = {
                     healthy = {
                       successes = 1,
-                      interval = 0.1,
                     },
                     unhealthy = {
                       http_statuses = { 401, 500 },
                       http_failures = 1,
                       tcp_failures = 1,
                       timeouts = 1,
-                      interval = 0.1,
                     },
                   }
                 }
