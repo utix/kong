@@ -456,7 +456,7 @@ function queryDns(target, cacheOnly)
     _G.ggg = ""
   end
 
-  for k, v in pairs(newQuery) do
+  for k, v in pairs(newQuery[1]) do
     _G.ggg = string.format("%s, dns[%s]: %s, ", _G.ggg, k, tostring(v))
   end
 
