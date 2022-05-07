@@ -1048,20 +1048,20 @@ for _, strategy in helpers.each_strategy() do
                   passive = {
                     healthy = {
                       successes = 1,
+                      interval = 0.1,
                     },
                     unhealthy = {
                       http_statuses = { 401, 500 },
                       http_failures = 1,
                       tcp_failures = 1,
                       timeouts = 1,
+                      interval = 0.1,
                     },
                   }
                 }
               })
               local port1 = bu.add_target(bp, upstream_id, localhost)
               local port2 = bu.add_target(bp, upstream_id, localhost)
-              ngx.log(ngx.ERR, "port1 = ",  port1)
-              ngx.log(ngx.ERR, "port2 = ",  port2)
               local api_host, service_id = bu.add_api(bp, upstream_name, { connect_timeout = 50, })
 
               -- add a plugin
