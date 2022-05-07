@@ -1046,6 +1046,7 @@ for _, strategy in helpers.each_strategy() do
               local upstream_name, upstream_id = bu.add_upstream(bp, {
                 healthchecks = bu.healthchecks_config {
                   active = {
+                    http_path = "/status",
                     healthy = {
                       interval = 0.1,
                     },
