@@ -282,6 +282,12 @@ end
 
 
 local function update_dns_result(target, newQuery)
+  if _G.ggg == nil then
+    _G.ggg = ""
+  end
+
+  _G.ggg = _G.ggg .. ", A"
+
   local balancer = target and target.balancer
 
   local oldQuery = target.lastQuery or {}
@@ -291,7 +297,7 @@ local function update_dns_result(target, newQuery)
   -- if our previous result is the same table as the current result, then nothing changed
   if oldQuery == newQuery then
     log(DEBUG, "no dns changes detected for ", target.name)
-
+    _G.ggg = _G.ggg .. ", B"
     return true    -- exit, nothing changed
   end
 
@@ -311,14 +317,18 @@ local function update_dns_result(target, newQuery)
     -- Note: if the original record is an SRV we cannot use the dns provided weights,
     -- because we can/are not going to possibly change weights on each request
     -- so we fix them at the `nodeWeight` property, as with A and AAAA records.
+    _G.ggg = _G.ggg .. ", C"
     if oldQuery.__ttl0Flag then
       -- still ttl 0 so nothing changed
       oldQuery.touched = ngx_now()
       oldQuery.expire = oldQuery.touched + balancer.ttl0Interval
       log(DEBUG, "no dns changes detected for ",
               target.name, ", still using ttl=0")
+      _G.ggg = _G.ggg .. ", D"
       return true
     end
+
+    _G.ggg = _G.ggg .. ", E"
 
     log(DEBUG, "ttl=0 detected for ", target.name)
     newQuery = {
@@ -337,6 +347,8 @@ local function update_dns_result(target, newQuery)
       }
   end
 
+  _G.ggg = _G.ggg .. ", F"
+
   -- a new dns record, was returned, but contents could still be the same, so check for changes
   -- sort table in unique order
   local rtype = (newQuery[1] or EMPTY).type
@@ -345,32 +357,42 @@ local function update_dns_result(target, newQuery)
     -- all existing addresses will be removed
     log(DEBUG, "blank dns record for ", target.name, ", assuming A-record")
     rtype = dns_client.TYPE_A
+    _G.ggg = _G.ggg .. ", G"
   end
   local newSorted = sorts[rtype](newQuery)
   local dirty
 
+  _G.ggg = _G.ggg .. ", H"
+
   if rtype ~= (oldSorted[1] or EMPTY).type then
+    _G.ggg = _G.ggg .. ", I"
     -- DNS recordtype changed; recycle everything
     log(DEBUG, "dns record type changed for ",
             target.name, ", ", (oldSorted[1] or EMPTY).type, " -> ",rtype)
     for i = #oldSorted, 1, -1 do  -- reverse order because we're deleting items
+      _G.ggg = _G.ggg .. ", J"
       balancer:disableAddress(target, oldSorted[i])
     end
     for _, entry in ipairs(newSorted) do -- use sorted table for deterministic order
+      _G.ggg = _G.ggg .. ", K"
       balancer:addAddress(target, entry)
     end
+    _G.ggg = _G.ggg .. ", L"
     dirty = true
   else
+    _G.ggg = _G.ggg .. ", M"
     -- new record, but the same type
     local topPriority = (newSorted[1] or EMPTY).priority -- nil for non-SRV records
     local done = {}
     local dCount = 0
     for _, newEntry in ipairs(newSorted) do
+      _G.ggg = _G.ggg .. ", N"
       if newEntry.priority ~= topPriority then break end -- exit when priority changes, as SRV only uses top priority
-
+      _G.ggg = _G.ggg .. ", O"
       local key = newEntry.__balancerSortKey
       local oldEntry = oldSorted[oldSorted[key] or "__key_not_found__"]
       if not oldEntry then
+        _G.ggg = _G.ggg .. ", P"
         -- it's a new entry
         log(DEBUG, "new dns record entry for ",
                 target.name, ": ", (newEntry.target or newEntry.address),
@@ -378,29 +400,36 @@ local function update_dns_result(target, newQuery)
         balancer:addAddress(target, newEntry)
         dirty = true
       else
+        _G.ggg = _G.ggg .. ", Q"
         -- it already existed (same ip, port)
         if newEntry.weight and
            newEntry.weight ~= oldEntry.weight and
            not (newEntry.weight == 0  and oldEntry.weight == SRV_0_WEIGHT)
         then
+          _G.ggg = _G.ggg .. ", R"
           -- weight changed (can only be an SRV)
           --host:findAddress(oldEntry):change(newEntry.weight == 0 and SRV_0_WEIGHT or newEntry.weight)
           balancer:changeWeight(target, oldEntry, newEntry.weight == 0 and SRV_0_WEIGHT or newEntry.weight)
           dirty = true
         else
+          _G.ggg = _G.ggg .. ", S"
           log(DEBUG, "unchanged dns record entry for ",
                   target.name, ": ", (newEntry.target or newEntry.address),
                   ":", newEntry.port) -- port = nil for A or AAAA records
         end
+        _G.ggg = _G.ggg .. ", T"
         done[key] = true
         dCount = dCount + 1
       end
     end
     if dCount ~= #oldSorted then
+      _G.ggg = _G.ggg .. ", U"
       -- not all existing entries were handled, remove the ones that are not in the
       -- new query result
       for _, entry in ipairs(oldSorted) do
+        _G.ggg = _G.ggg .. ", V"
         if not done[entry.__balancerSortKey] then
+          _G.ggg = _G.ggg .. ", W"
           log(DEBUG, "removed dns record entry for ",
                   target.name, ": ", (entry.target or entry.address),
                   ":", entry.port) -- port = nil for A or AAAA records
@@ -411,10 +440,13 @@ local function update_dns_result(target, newQuery)
     end
   end
 
+  _G.ggg = _G.ggg .. ", X"
+
   target.lastQuery  = newQuery
   target.lastSorted = newSorted
 
   if dirty then
+    _G.ggg = _G.ggg .. ", Y"
     -- above we already added and updated records. Removed addresses are disabled, and
     -- need yet to be deleted from the Host
     log(DEBUG, "updating balancer based on dns changes for ",
@@ -428,6 +460,7 @@ local function update_dns_result(target, newQuery)
   end
 
   log(DEBUG, "querying dns and updating for ", target.name, " completed")
+  _G.ggg = _G.ggg .. ", Z"
   return true
 end
 

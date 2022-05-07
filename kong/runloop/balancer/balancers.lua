@@ -412,10 +412,6 @@ function balancer_mt:changeWeight(target, entry, newWeight)
   local entry_ip = entry.address or entry.target
   local entry_port = (entry.port ~= 0 and entry.port) or target.port
 
-  if _G.ggg == nil then
-    _G.ggg = ""
-  end
-
   for _, addr in ipairs(target.addresses) do
     if (addr.ip == entry_ip) and addr.port == entry_port then
       local delta = newWeight - addr.weight
@@ -427,8 +423,6 @@ function balancer_mt:changeWeight(target, entry, newWeight)
         target.unavailableWeight = target.unavailableWeight + delta
         self.unavailableWeight = self.unavailableWeight + delta
       end
-
-      _G.ggg = string.format("%s, total: %d, unavailable: %d, delta: %d", _G.ggg, self.totalWeight, self.unavailableWeight, delta)
 
       addr.weight = newWeight
       self:updateStatus()
