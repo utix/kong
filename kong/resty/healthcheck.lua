@@ -1652,6 +1652,9 @@ function _M.new(opts)
           then
             checker_obj.checks.active.healthy.last_run = cur_time
             checker_callback(checker_obj, "healthy")
+
+          else
+            _G.iii = string.format("%s, no_up_healthy", _G.iii)
           end
 
           if checker_obj.checks.active.unhealthy.active and
@@ -1660,6 +1663,9 @@ function _M.new(opts)
           then
             checker_obj.checks.active.unhealthy.last_run = cur_time
             checker_callback(checker_obj, "unhealthy")
+
+          else
+            _G.iii = string.format("%s, no_up_unhealthy", _G.iii)
           end
         end
       end,
