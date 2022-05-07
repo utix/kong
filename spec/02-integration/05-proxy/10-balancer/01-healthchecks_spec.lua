@@ -1045,14 +1045,14 @@ for _, strategy in helpers.each_strategy() do
               -- configure healthchecks with a 1-error threshold
               local upstream_name, upstream_id = bu.add_upstream(bp, {
                 healthchecks = bu.healthchecks_config {
-                  -- active = {
-                  --   healthy = {
-                  --     interval = 0.1,
-                  --   },
-                  --   unhealthy = {
-                  --     interval = 0.1,
-                  --   }
-                  -- },
+                  active = {
+                    healthy = {
+                      interval = 0.1,
+                    },
+                    unhealthy = {
+                      interval = 0.1,
+                    }
+                  },
                   passive = {
                     healthy = {
                       successes = 1,
@@ -1102,23 +1102,23 @@ for _, strategy in helpers.each_strategy() do
               --   oks, fails, last_status = bu.client_requests(bu.SLOTS * 2, api_host)
               --   return last_status == 200
               -- end, 5)
-              oks, fails, last_status = bu.client_requests(bu.SLOTS * 2, api_host)
-              assert.same(200, last_status)
-              assert.same(bu.SLOTS * 2, oks)
-              assert.same(0, fails)
-              -- helpers.wait_until(function()
-              --  oks, fails, last_status = bu.client_requests(bu.SLOTS * 2, api_host)
-              --  local ok, err = pcall(function()
-              --    assert.same(200, last_status)
-              --    assert.same(bu.SLOTS * 2, oks)
-              --    assert.same(0, fails)
-              --  end)
-              --  if not ok then
-              --    return false, err
-              --  end
+              -- oks, fails, last_status = bu.client_requests(bu.SLOTS * 2, api_host)
+              -- assert.same(200, last_status)
+              -- assert.same(bu.SLOTS * 2, oks)
+              -- assert.same(0, fails)
+              helpers.wait_until(function()
+               oks, fails, last_status = bu.client_requests(bu.SLOTS * 2, api_host)
+               local ok, err = pcall(function()
+                 assert.same(200, last_status)
+                 assert.same(bu.SLOTS * 2, oks)
+                 assert.same(0, fails)
+               end)
+               if not ok then
+                 return false, err
+               end
 
-              --  return true
-              -- end, 5)
+               return true
+              end, 5)
 
               -- collect server results
               local count1 = server1:shutdown()
