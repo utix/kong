@@ -1038,7 +1038,7 @@ for _, strategy in helpers.each_strategy() do
 
             local stream_it = (mode == "ipv6" or strategy == "off") and pending or it
 
-            it("do not count Kong-generated errors as failures", function()
+            it("do not count Kong-generated errors as failures #only", function()
 
               bu.begin_testcase_setup(strategy, bp)
 

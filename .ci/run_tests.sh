@@ -33,7 +33,8 @@ fi
 if [ "$TEST_SUITE" == "integration" ]; then
     if [[ "$TEST_SPLIT" == first* ]]; then
         # GitHub Actions, run first batch of integration tests
-        eval "$TEST_CMD" $(ls -d spec/02-integration/05-proxy/10-balancer/01-healthchecks_spec.lua)
+        # eval "$TEST_CMD" $(ls -d spec/02-integration/05-proxy/10-balancer/01-healthchecks_spec.lua)
+        bin/busted --verbose -o htest -t only spec/02-integration/05-proxy/10-balancer/01-healthchecks_spec.lua
 
     elif [[ "$TEST_SPLIT" == second* ]]; then
         # GitHub Actions, run second batch of integration tests

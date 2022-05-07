@@ -531,7 +531,7 @@ end
 
 
 local localhosts = {
-  -- ipv4 = "127.0.0.1",
+  ipv4 = "127.0.0.1",
   -- ipv6 = "[::1]",
   hostname = "localhost",
 }
