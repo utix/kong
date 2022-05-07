@@ -1050,7 +1050,6 @@ for _, strategy in helpers.each_strategy() do
                       interval = 0.1,
                     },
                     unhealthy = {
-                      http_statuses = { 401, 500 },
                       interval = 0.1,
                     }
                   },
