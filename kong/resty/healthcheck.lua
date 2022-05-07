@@ -754,6 +754,12 @@ end
 function checker:report_http_status(ip, port, hostname, http_status, check)
   http_status = tonumber(http_status) or 0
 
+  if not _G.jjj then
+    _G.jjj = ""
+  end
+
+  _G.jjj = string.format("%s, %s", _G.jjj, debug.traceback())
+
   local checks = self.checks[check or "passive"]
 
   local status_type, limit, ctr
@@ -762,7 +768,7 @@ function checker:report_http_status(ip, port, hostname, http_status, check)
     limit = checks.healthy.successes
     ctr = CTR_SUCCESS
   elseif checks.unhealthy.http_statuses[http_status]
-      or http_status == 0 then
+      or http_status == 0 then 
     status_type = "unhealthy"
     limit = checks.unhealthy.http_failures
     ctr = CTR_HTTP
