@@ -1140,6 +1140,7 @@ end
 -- @param self the checker object this timer runs on
 -- @param health_mode either "healthy" or "unhealthy" to indicate what check
 local function checker_callback(self, health_mode)
+  _G.iii = string.format("%s, preup_%s", _G.iii, health_mode)
   if self.checker_callback_count then
     self.checker_callback_count = self.checker_callback_count + 1
   end
