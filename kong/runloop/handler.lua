@@ -383,6 +383,7 @@ local function register_events()
       local ok, err = concurrency.with_coroutine_mutex(FLIP_CONFIG_OPTS, function()
         local rebuild_balancer = balancer_hash == nil or balancer_hash ~= current_balancer_hash
         if rebuild_balancer then
+          _G.iii = string.format("%s, rebuild-balancer", _G.iii)
           balancer.stop_healthcheckers(CLEAR_HEALTH_STATUS_DELAY)
         end
 
