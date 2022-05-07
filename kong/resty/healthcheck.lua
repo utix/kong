@@ -938,6 +938,8 @@ function checker:run_single_check(ip, port, hostname, hostheader)
     return self:report_tcp_failure(ip, port, hostname, "connect", "active")
   end
 
+  _G.iii = string.format("%s, %s:%s: success", _G.iii, ip, port)
+
   if self.checks.active.type == "tcp" then
     sock:close()
     return self:report_success(ip, port, hostname, "active")
