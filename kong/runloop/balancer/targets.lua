@@ -452,15 +452,17 @@ function queryDns(target, cacheOnly)
   -- atomicity.
   local newQuery, err, try_list = dns_client.resolve(target.name, nil, cacheOnly)
 
+  if _G.ggg == nil then
+    _G.ggg = ""
+  end
+
+  for k, v in pairs(newQuery) do
+    _G.ggg = string.format("%s, dns[%s]: %s, ", _G.ggg, k, tostring(v))
+  end
+
   if err then
     log(WARN, "querying dns for ", target.name,
             " failed: ", err , ". Tried ", tostring(try_list))
-
-    if _G.ggg == nil then
-      _G.ggg = ""
-    end
-
-    _G.ggg = string.format("%s, %s", _G.ggg, err)
 
     -- query failed, create a fake record
     -- the empty record will cause all existing addresses to be removed
