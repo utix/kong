@@ -108,6 +108,12 @@
   [8823](https://github.com/Kong/kong/pull/8823)
 - The Kong singletons module `"kong.singletons"` was removed in favor of the PDK `kong.*`.
   [#8874](https://github.com/Kong/kong/pull/8874)
+- It is no longer possible to use a .lua format to import a declarative config from the `kong`
+  command-line tool, only json and yaml are supported. If your update procedure with kong involves
+  executing `kong config db_import config.lua`, please create a `config.json` or `config.yml` and
+  use that before upgrading.
+  [#8898](https://github.com/Kong/kong/pull/8898)
+
 
 #### Admin API
 
