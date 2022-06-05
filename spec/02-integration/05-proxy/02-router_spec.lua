@@ -87,7 +87,7 @@ local function insert_routes(bp, routes)
 
   end
 
-  ngx.sleep(0.01)  -- temporary wait
+  ngx.sleep(0.3)  -- temporary wait
   return routes
 end
 

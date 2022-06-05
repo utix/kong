@@ -40,7 +40,8 @@ describe("#postgres Postgres query locks", function()
     })
     assert.res_status(204 , res)
 
-    -- make a request that would run a query while no resources are available
+    ngx.sleep(0.5)
+
     res = assert(client:send {
       method = "GET",
       path = "/slow-resource",
@@ -49,5 +50,6 @@ describe("#postgres Postgres query locks", function()
     local body = assert.res_status(500 , res)
     local json = cjson.decode(body)
     assert.same({ error = "error acquiring query semaphore: timeout" }, json)
+
   end)
 end)

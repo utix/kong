@@ -370,6 +370,8 @@ for _, strategy in helpers.each_strategy() do
                 assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset >= 0)
+
+                ngx.sleep(0.2)
               end
 
               -- Additonal request, while limit is 6/minute
@@ -402,6 +404,8 @@ for _, strategy in helpers.each_strategy() do
                 assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
+
+                ngx.sleep(0.2)
               end
 
               -- Try a different path on the same host. This should reset the timers
@@ -416,6 +420,8 @@ for _, strategy in helpers.each_strategy() do
                 assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
+
+                ngx.sleep(0.2)
               end
 
               -- Continue doing requests on the path which "blocks"
@@ -430,6 +436,8 @@ for _, strategy in helpers.each_strategy() do
                 assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
+
+                ngx.sleep(0.2)
               end
 
               -- Additonal request, while limit is 6/minute
@@ -462,6 +470,8 @@ for _, strategy in helpers.each_strategy() do
                 assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
+
+                ngx.sleep(0.2)
               end
 
               for i = 4, 6 do
@@ -475,6 +485,8 @@ for _, strategy in helpers.each_strategy() do
                 assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
+
+                ngx.sleep(0.2)
               end
 
               -- Additonal request, while limit is 6/minute
@@ -514,6 +526,8 @@ for _, strategy in helpers.each_strategy() do
                 assert.are.same(limits.minute - i, tonumber(res.headers["ratelimit-remaining"]))
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
+
+                ngx.sleep(0.2)
               end
 
               local res, body = GET("/status/200", {
@@ -555,6 +569,7 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(string.match(res, "ratelimit%-reset: (%d+)"))
                 assert.equal(true, reset <= 60 and reset >= 0)
 
+                ngx.sleep(0.2)
               end
 
               -- Additonal request, while limit is 6/minute
@@ -592,6 +607,8 @@ for _, strategy in helpers.each_strategy() do
                   assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
                   local reset = tonumber(res.headers["ratelimit-reset"])
                   assert.equal(true, reset <= 60 and reset > 0)
+
+                  ngx.sleep(0.2)
                 end
 
                 -- Third query, while limit is 2/minute
@@ -630,6 +647,8 @@ for _, strategy in helpers.each_strategy() do
                   assert.are.same(8 - i, tonumber(res.headers["ratelimit-remaining"]))
                   local reset = tonumber(res.headers["ratelimit-reset"])
                   assert.equal(true, reset <= 60 and reset > 0)
+
+                  ngx.sleep(0.2)
                 end
 
                 local res, body = GET("/status/200?apikey=apikey122", {
@@ -661,6 +680,8 @@ for _, strategy in helpers.each_strategy() do
                   assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
                   local reset = tonumber(res.headers["ratelimit-reset"])
                   assert.equal(true, reset <= 60 and reset > 0)
+
+                  ngx.sleep(0.2)
                 end
 
                 local res, body = GET("/status/200?apikey=apikey122", {
@@ -997,6 +1018,8 @@ for _, strategy in helpers.each_strategy() do
               assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
+
+              ngx.sleep(0.2)
             end
 
             -- Additonal request, while limit is 6/minute
@@ -1077,6 +1100,8 @@ for _, strategy in helpers.each_strategy() do
               assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
+
+              ngx.sleep(0.2)
             end
 
             -- Additonal request, while limit is 6/minute
@@ -1158,6 +1183,8 @@ for _, strategy in helpers.each_strategy() do
               assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
+
+              ngx.sleep(0.2)
             end
 
             for i = 1, 6 do
@@ -1169,6 +1196,8 @@ for _, strategy in helpers.each_strategy() do
               assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
+
+              ngx.sleep(0.2)
             end
 
             -- Additonal request, while limit is 6/minute
@@ -1243,6 +1272,8 @@ for _, strategy in helpers.each_strategy() do
               assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
+
+              ngx.sleep(0.2)
             end
 
             -- Additonal request, while limit is 6/minute
@@ -1323,6 +1354,8 @@ for _, strategy in helpers.each_strategy() do
               assert.are.same(6 - i, tonumber(res.headers["ratelimit-remaining"]))
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
+
+              ngx.sleep(0.2)
             end
 
             -- Additonal request, while limit is 6/minute
