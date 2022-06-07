@@ -42,4 +42,9 @@ describe("grpc tools", function()
       "Added.Final",
     }, methods)
   end)
+
+  it("includes kong/include in the load path", function()
+    local grpc_tools_instance = grpc_tools.new()
+    assert.matches("kong/include$", grpc_tools_instance.protoc_instance.paths[3])
+  end)
 end)
