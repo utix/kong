@@ -51,6 +51,10 @@ local function setup_kong(fixtures)
 
   _G.kong = kong
 
+  kong.configuration = {
+    legacy_worker_events = true,
+  }
+
   kong.worker_events = require "resty.worker.events"
   kong.db = {}
 
