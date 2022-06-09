@@ -277,6 +277,7 @@ function healthcheckers_M.create_healthchecker(balancer, upstream)
   else
     events_module = "resty.events"
   end
+  print("events_module = ", events_module)
 
   local healthchecker, err = healthcheck.new({
     name = assert(upstream.ws_id) .. ":" .. upstream.name,
