@@ -35,6 +35,7 @@ local function setup_it_block(consistency)
       configuration = {
         worker_consistency = consistency,
         worker_state_update_frequency = 0.1,
+        legacy_worker_events = true,
       },
       core_cache = mock_cache(cache_table),
     },
@@ -50,10 +51,6 @@ local function setup_kong(fixtures)
   local kong = {}
 
   _G.kong = kong
-
-  kong.configuration = {
-    legacy_worker_events = true,
-  }
 
   kong.worker_events = require "resty.worker.events"
   kong.db = {}
