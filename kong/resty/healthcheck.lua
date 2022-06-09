@@ -1617,7 +1617,7 @@ function _M.new(opts)
         end
 
         local cur_time = ngx_now()
-        for _, checker_obj in pairs(hcs) do
+        for _, checker_obj in ipairs(hcs) do
           -- clear targets marked for delayed removal
           locking_target_list(checker_obj, function(target_list)
             local removed_targets = {}
