@@ -42,12 +42,10 @@ local ngx_worker_pid = ngx.worker.pid
 local ssl = require("ngx.ssl")
 local resty_timer = require "resty.timer"
 
-local worker_events
-if package.loaded["resty.events.compat"] then
-    worker_events = require("resty.events.compat")
-else
-    worker_events = require("resty.worker.events")
-end
+
+local RESTY_EVENTS_VER = "0.1.0"
+local RESTY_WORKER_EVENTS_VER = "0.3.3"
+
 
 local new_tab
 local nkeys
@@ -88,6 +86,32 @@ do
     end
   end
 end
+
+
+local worker_events
+--- This function loads the worker events module received as arg. It will throw
+-- error() if it is not possible to load the module.
+local function load_events_module(module_name)
+  if module_name == nil or module_name == "resty.worker.events" then
+    worker_events = require("resty.worker.events")
+    assert(worker_events, "could not load lua-resty-worker-events")
+    assert(worker_events._VERSION == RESTY_WORKER_EVENTS_VER,
+          "unsupported lua-resty-worker-events version")
+    assert(worker_events.configured(), "please configure the " ..
+          "'lua-resty-worker-events' module before using 'lua-resty-healthcheck'")
+
+  elseif module_name == "resty.events" then
+    worker_events = require("resty.events.compat")
+    assert(worker_events, "could not load lua-resty-events")
+    assert(worker_events._VERSION == RESTY_EVENTS_VER,
+          "unsupported lua-resty-events version")
+
+  else
+    error("unknown events module")
+  end
+
+end
+
 
 -- constants
 local EVENT_SOURCE_PREFIX = "lua-resty-healthcheck"
@@ -1340,6 +1364,7 @@ local defaults = {
   name = NO_DEFAULT,
   shm_name = NO_DEFAULT,
   type = NO_DEFAULT,
+  events_module = "resty.worker.events",
   checks = {
     active = {
       type = "http",
@@ -1443,8 +1468,7 @@ end
 -- @return checker object, or `nil + error`
 function _M.new(opts)
 
-  assert(worker_events.configured(), "please configure the " ..
-      "'lua-resty-worker-events' module before using 'lua-resty-healthcheck'")
+  load_events_module((opts or EMPTY).events_module)
 
   local active_type = (((opts or EMPTY).checks or EMPTY).active or EMPTY).type
   local passive_type = (((opts or EMPTY).checks or EMPTY).passive or EMPTY).type
@@ -1593,7 +1617,7 @@ function _M.new(opts)
         end
 
         local cur_time = ngx_now()
-        for _, checker_obj in ipairs(hcs) do
+        for _, checker_obj in pairs(hcs) do
           -- clear targets marked for delayed removal
           locking_target_list(checker_obj, function(target_list)
             local removed_targets = {}
