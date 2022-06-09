@@ -360,6 +360,8 @@ for _, strategy in helpers.each_strategy() do
           describe("Without authentication (IP address)", function()
             it_with_retry("blocks if exceeding limit", function()
               for i = 1, 6 do
+                local wait_timers_ctx = helpers.wait_timers_begin()
+
                 local res = GET("/status/200", {
                   headers = { Host = "test1.com" },
                 }, 200)
@@ -371,7 +373,7 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset >= 0)
 
-                ngx.sleep(0.2)
+                helpers.wait_timers_end(wait_timers_ctx, 0.5)
               end
 
               -- Additonal request, while limit is 6/minute
@@ -394,6 +396,8 @@ for _, strategy in helpers.each_strategy() do
 
             it_with_retry("blocks if exceeding limit, only if done via same path", function()
               for i = 1, 3 do
+                local wait_timers_ctx = helpers.wait_timers_begin()
+
                 local res = GET("/status/200", {
                   headers = { Host = "test-path.com" },
                 }, 200)
@@ -405,11 +409,13 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
 
-                ngx.sleep(0.2)
+                helpers.wait_timers_end(wait_timers_ctx, 0.5)
               end
 
               -- Try a different path on the same host. This should reset the timers
               for i = 1, 3 do
+                local wait_timers_ctx = helpers.wait_timers_begin()
+
                 local res = GET("/status/201", {
                   headers = { Host = "test-path.com" },
                 }, 201)
@@ -421,11 +427,13 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
 
-                ngx.sleep(0.2)
+                helpers.wait_timers_end(wait_timers_ctx, 0.5)
               end
 
               -- Continue doing requests on the path which "blocks"
               for i = 4, 6 do
+                local wait_timers_ctx = helpers.wait_timers_begin()
+
                 local res = GET("/status/200", {
                   headers = { Host = "test-path.com" },
                 }, 200)
@@ -437,7 +445,7 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
 
-                ngx.sleep(0.2)
+                helpers.wait_timers_end(wait_timers_ctx, 0.5)
               end
 
               -- Additonal request, while limit is 6/minute
@@ -460,6 +468,8 @@ for _, strategy in helpers.each_strategy() do
 
             it_with_retry("counts against the same service register from different routes", function()
               for i = 1, 3 do
+                local wait_timers_ctx = helpers.wait_timers_begin()
+
                 local res = GET("/status/200", {
                   headers = { Host = "test-service1.com" },
                 }, 200)
@@ -471,10 +481,12 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
 
-                ngx.sleep(0.2)
+                helpers.wait_timers_end(wait_timers_ctx, 0.5)
               end
 
               for i = 4, 6 do
+                local wait_timers_ctx = helpers.wait_timers_begin()
+
                 local res = GET("/status/200", {
                   headers = { Host = "test-service2.com" },
                 }, 200)
@@ -486,7 +498,7 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
 
-                ngx.sleep(0.2)
+                helpers.wait_timers_end(wait_timers_ctx, 0.5)
               end
 
               -- Additonal request, while limit is 6/minute
@@ -514,6 +526,8 @@ for _, strategy in helpers.each_strategy() do
               }
 
               for i = 1, 3 do
+                local wait_timers_ctx = helpers.wait_timers_begin()
+
                 local res = GET("/status/200", {
                   headers = { Host = "test2.com" },
                 }, 200)
@@ -527,7 +541,7 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(res.headers["ratelimit-reset"])
                 assert.equal(true, reset <= 60 and reset > 0)
 
-                ngx.sleep(0.2)
+                helpers.wait_timers_end(wait_timers_ctx, 0.5)
               end
 
               local res, body = GET("/status/200", {
@@ -553,6 +567,8 @@ for _, strategy in helpers.each_strategy() do
           describe("Without authentication (IP address)", function()
             it_with_retry("blocks if exceeding limit #grpc", function()
               for i = 1, 6 do
+                local wait_timers_ctx = helpers.wait_timers_begin()
+
                 local ok, res = helpers.proxy_client_grpc(){
                   service = "hello.HelloService.SayHello",
                   opts = {
@@ -569,7 +585,7 @@ for _, strategy in helpers.each_strategy() do
                 local reset = tonumber(string.match(res, "ratelimit%-reset: (%d+)"))
                 assert.equal(true, reset <= 60 and reset >= 0)
 
-                ngx.sleep(0.2)
+                helpers.wait_timers_end(wait_timers_ctx, 0.5)
               end
 
               -- Additonal request, while limit is 6/minute
@@ -597,6 +613,8 @@ for _, strategy in helpers.each_strategy() do
             describe("API-specific plugin", function()
               it_with_retry("blocks if exceeding limit", function()
                 for i = 1, 6 do
+                  local wait_timers_ctx = helpers.wait_timers_begin()
+
                   local res = GET("/status/200?apikey=apikey123", {
                     headers = { Host = "test3.com" },
                   }, 200)
@@ -608,7 +626,7 @@ for _, strategy in helpers.each_strategy() do
                   local reset = tonumber(res.headers["ratelimit-reset"])
                   assert.equal(true, reset <= 60 and reset > 0)
 
-                  ngx.sleep(0.2)
+                  helpers.wait_timers_end(wait_timers_ctx, 0.5)
                 end
 
                 -- Third query, while limit is 2/minute
@@ -637,6 +655,8 @@ for _, strategy in helpers.each_strategy() do
             describe("#flaky Plugin customized for specific consumer and route", function()
               it_with_retry("blocks if exceeding limit", function()
                 for i = 1, 8 do
+                  local wait_timers_ctx = helpers.wait_timers_begin()
+
                   local res = GET("/status/200?apikey=apikey122", {
                     headers = { Host = "test3.com" },
                   }, 200)
@@ -648,7 +668,7 @@ for _, strategy in helpers.each_strategy() do
                   local reset = tonumber(res.headers["ratelimit-reset"])
                   assert.equal(true, reset <= 60 and reset > 0)
 
-                  ngx.sleep(0.2)
+                  helpers.wait_timers_end(wait_timers_ctx, 0.5)
                 end
 
                 local res, body = GET("/status/200?apikey=apikey122", {
@@ -670,6 +690,8 @@ for _, strategy in helpers.each_strategy() do
 
               it_with_retry("blocks if the only rate-limiting plugin existing is per consumer and not per API", function()
                 for i = 1, 6 do
+                  local wait_timers_ctx = helpers.wait_timers_begin()
+
                   local res = GET("/status/200?apikey=apikey122", {
                     headers = { Host = "test4.com" },
                   }, 200)
@@ -681,7 +703,7 @@ for _, strategy in helpers.each_strategy() do
                   local reset = tonumber(res.headers["ratelimit-reset"])
                   assert.equal(true, reset <= 60 and reset > 0)
 
-                  ngx.sleep(0.2)
+                  helpers.wait_timers_end(wait_timers_ctx, 0.5)
                 end
 
                 local res, body = GET("/status/200?apikey=apikey122", {
@@ -1008,6 +1030,8 @@ for _, strategy in helpers.each_strategy() do
 
           it_with_retry("blocks when the consumer exceeds their quota, no matter what service/route used", function()
             for i = 1, 6 do
+              local wait_timers_ctx = helpers.wait_timers_begin()
+
               local res = GET("/status/200?apikey=apikey125", {
                 headers = { Host = fmt("test%d.com", i) },
               }, 200)
@@ -1019,7 +1043,7 @@ for _, strategy in helpers.each_strategy() do
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
 
-              ngx.sleep(0.2)
+              helpers.wait_timers_end(wait_timers_ctx, 0.5)
             end
 
             -- Additonal request, while limit is 6/minute
@@ -1090,6 +1114,8 @@ for _, strategy in helpers.each_strategy() do
 
           it_with_retry("blocks if exceeding limit", function()
             for i = 1, 6 do
+              local wait_timers_ctx = helpers.wait_timers_begin()
+
               local res = GET("/status/200", {
                 headers = { Host = fmt("test%d.com", i) },
               }, 200)
@@ -1101,7 +1127,7 @@ for _, strategy in helpers.each_strategy() do
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
 
-              ngx.sleep(0.2)
+              helpers.wait_timers_end(wait_timers_ctx, 0.5)
             end
 
             -- Additonal request, while limit is 6/minute
@@ -1175,6 +1201,8 @@ for _, strategy in helpers.each_strategy() do
 
           it_with_retry("blocks if exceeding limit", function()
             for i = 1, 6 do
+              local wait_timers_ctx = helpers.wait_timers_begin()
+
               local res = GET("/status/200", { headers = { Host = "test1.com" } }, 200)
 
               assert.are.same(6, tonumber(res.headers["x-ratelimit-limit-minute"]))
@@ -1184,10 +1212,12 @@ for _, strategy in helpers.each_strategy() do
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
 
-              ngx.sleep(0.2)
+              helpers.wait_timers_end(wait_timers_ctx, 0.5)
             end
 
             for i = 1, 6 do
+              local wait_timers_ctx = helpers.wait_timers_begin()
+
               local res = GET("/status/200", { headers = { Host = "test2.com" } }, 200)
 
               assert.are.same(6, tonumber(res.headers["x-ratelimit-limit-minute"]))
@@ -1197,7 +1227,7 @@ for _, strategy in helpers.each_strategy() do
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
 
-              ngx.sleep(0.2)
+              helpers.wait_timers_end(wait_timers_ctx, 0.5)
             end
 
             -- Additonal request, while limit is 6/minute
@@ -1262,6 +1292,8 @@ for _, strategy in helpers.each_strategy() do
 
           it_with_retry("blocks if exceeding limit", function()
             for i = 1, 6 do
+              local wait_timers_ctx = helpers.wait_timers_begin()
+
               local res = GET("/status/200", {
                 headers = { Host = fmt("test%d.com", i) },
               }, 200)
@@ -1273,7 +1305,7 @@ for _, strategy in helpers.each_strategy() do
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
 
-              ngx.sleep(0.2)
+              helpers.wait_timers_end(wait_timers_ctx, 0.5)
             end
 
             -- Additonal request, while limit is 6/minute
@@ -1344,6 +1376,8 @@ for _, strategy in helpers.each_strategy() do
 
           it_with_retry("maintains the counters for a path through different services and routes", function()
             for i = 1, 6 do
+              local wait_timers_ctx = helpers.wait_timers_begin()
+
               local res = GET("/status/200", {
                 headers = { Host = fmt("test%d.com", i) },
               }, 200)
@@ -1355,7 +1389,7 @@ for _, strategy in helpers.each_strategy() do
               local reset = tonumber(res.headers["ratelimit-reset"])
               assert.equal(true, reset <= 60 and reset > 0)
 
-              ngx.sleep(0.2)
+              helpers.wait_timers_end(wait_timers_ctx, 0.5)
             end
 
             -- Additonal request, while limit is 6/minute

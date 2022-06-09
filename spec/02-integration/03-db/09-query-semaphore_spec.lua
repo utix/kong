@@ -33,6 +33,8 @@ describe("#postgres Postgres query locks", function()
   end)
 
   it("results in query error failing to acquire resource", function()
+    local wait_timers_ctx = helpers.wait_timers_begin()
+
     local res = assert(client:send {
       method = "GET",
       path = "/slow-resource?prime=true",
@@ -40,7 +42,7 @@ describe("#postgres Postgres query locks", function()
     })
     assert.res_status(204 , res)
 
-    ngx.sleep(0.5)
+    helpers.wait_timers_end(wait_timers_ctx, 0.5)
 
     res = assert(client:send {
       method = "GET",
